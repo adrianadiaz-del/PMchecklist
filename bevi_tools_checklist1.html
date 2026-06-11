@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bevi PM Tools Checklist</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Open Sans', sans-serif; background: #ffffff; color: #03257E; font-size: 16px; padding: 2rem; width: 100%; }
+    .wrap { background: #ffffff; padding: 0.5rem 0 2rem; width: 100%; }
+    .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: #246EFF; margin: 1.5rem 0 0.5rem; padding: 0 0 6px; border-bottom: 1px solid #D7E5FF; }
+    .tool-row { display: flex; align-items: center; gap: 14px; padding: 11px 0; border-bottom: 1px solid #D7E5FF; width: 100%; }
+    .tool-row:last-child { border-bottom: none; }
+    .thumb { width: 65px; height: 65px; border-radius: 8px; border: 1px solid #D7E5FF; background: #f5f8ff; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; color: #246EFF; transition: border-color 0.15s, background 0.15s; overflow: hidden; }
+    .thumb:hover { border-color: #246EFF; background: #D7E5FF; }
+    .thumb i { font-size: 30px; }
+    .thumb img { width: 100%; height: 100%; object-fit: contain; object-position: center; padding: 4px; }
+    .tool-info { flex: 1; min-width: 0; }
+    .tool-name { font-size: 16px; font-weight: 600; color: #03257E; }
+    .tool-pn { font-size: 12px; color: #246EFF; margin-top: 2px; font-family: monospace; }
+    .tool-desc { font-size: 13px; color: #5a7ab8; margin-top: 3px; line-height: 1.5; }
+    .mtag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+    .mtag-su { background: #D7E5FF; color: #03257E; }
+    .mtag-ct { background: #e8f0fe; color: #03257E; }
+    .badge-opt { font-size: 11px; padding: 2px 8px; border-radius: 99px; font-weight: 600; flex-shrink: 0; background: #D7E5FF; color: #03257E; white-space: nowrap; }
+    input[type=checkbox] { width: 17px; height: 17px; cursor: pointer; accent-color: #246EFF; flex-shrink: 0; }
+    .rec-pair { display: flex; gap: 12px; margin-top: 4px; width: 100%; }
+    .rec-card { flex: 1; border: 1px solid #D7E5FF; border-radius: 10px; padding: 12px 14px; background: #f5f8ff; cursor: pointer; display: flex; gap: 12px; align-items: center; transition: border-color 0.15s; min-width: 0; }
+    .rec-card:hover { border-color: #246EFF; }
+    .rec-thumb { width: 65px; height: 65px; border-radius: 6px; background: #fff; border: 1px solid #D7E5FF; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #246EFF; overflow: hidden; }
+    .rec-thumb img { width: 100%; height: 100%; object-fit: contain; object-position: center; padding: 3px; }
+    .rec-thumb i { font-size: 28px; }
+    .rec-info { min-width: 0; flex: 1; }
+    .rec-name { font-size: 13px; font-weight: 600; color: #03257E; line-height: 1.3; }
+    .rec-pn { font-size: 11px; color: #246EFF; font-family: monospace; margin-top: 2px; }
+    .rec-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
+    .rec-note { font-size: 13px; color: #5a7ab8; margin: 0 0 10px; line-height: 1.5; }
+    .lb-overlay { display: none; position: fixed; inset: 0; background: rgba(3,37,126,0.45); z-index: 1000; align-items: center; justify-content: center; }
+    .lb-overlay.open { display: flex; }
+    .lb-card { background: #fff; border-radius: 12px; border: 1px solid #D7E5FF; padding: 1.25rem; max-width: 380px; width: 90%; }
+    .lb-img { width: 100%; aspect-ratio: 4/3; border-radius: 8px; background: #f5f8ff; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; color: #246EFF; border: 1px solid #D7E5FF; overflow: hidden; }
+    .lb-img i { font-size: 52px; }
+    .lb-img img { width: 100%; height: 100%; object-fit: contain; object-position: center; padding: 16px; }
+    .lb-name { font-size: 15px; font-weight: 600; color: #03257E; margin: 0 0 4px; }
+    .lb-pn { font-size: 12px; color: #246EFF; font-family: monospace; margin: 0 0 8px; }
+    .lb-tags { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+    .lb-desc { font-size: 13px; color: #5a7ab8; line-height: 1.55; margin: 0 0 1rem; }
+    .lb-warning { font-size: 12px; background: #fff8e1; color: #7a5500; border-radius: 8px; border: 1px solid #ffe082; padding: 7px 10px; margin-bottom: 1rem; line-height: 1.5; }
+    .lb-close { font-size: 13px; font-family: 'Open Sans', sans-serif; color: #03257E; background: #D7E5FF; border: none; border-radius: 8px; padding: 8px 14px; cursor: pointer; width: 100%; font-weight: 600; }
+    .lb-close:hover { background: #c0d4ff; }
+  </style>
+</head>
+<body>
+
+<div id="checklist" class="wrap"></div>
+
+<div class="lb-overlay" id="lb-overlay">
+  <div class="lb-card">
+    <div class="lb-img" id="lb-img"><i class="ti ti-package"></i></div>
+    <p class="lb-name" id="lb-name"></p>
+    <p class="lb-pn" id="lb-pn"></p>
+    <div class="lb-tags" id="lb-tags"></div>
+    <p class="lb-desc" id="lb-desc"></p>
+    <div id="lb-warning" style="display:none" class="lb-warning"></div>
+    <button class="lb-close" onclick="closeLB()">Close</button>
+  </div>
+</div>
+
+<script>
+const BASE = "https://adrianadiaz-del.github.io/PMchecklist/";
+
+const manifolds = [
+  { machine:"SU 2.0", name:"Octafold 8x Flavor Line Cleaning Manifold", pn:"P/N #720-0133", icon:"ti-tool", tag:"su", imgUrl:BASE+"Untitled - June 11, 2026 at 12.51.08.png", desc:"Allows all 8 flavor lines to be sanitized simultaneously. Note: If not on-hand, the 8 flavor lines can still be sanitized individually, one-at-a-time. However, we strongly recommend using the cleaning manifold to save time and sanitize all 8 lines at once." },
+  { machine:"CT 1.5", name:"4-Flavor Line Cleaning Manifold", pn:"P/N #720-0231", icon:"ti-tool", tag:"ct", imgUrl:BASE+"Untitled - June 11, 2026 at 12.54.57.png", desc:"Allows all 4 flavor lines to be sanitized simultaneously. Note: If not on-hand, the 4 flavor lines can still be sanitized individually, one-at-a-time. However, we strongly recommend using the cleaning manifold to save time and sanitize all 4 lines at once." }
+];
+
+const required = [
+  { name:"Kay-5 Chlorine-Based Sanitizer (1 packet)", pn:"P/N #720-0144 (5-pack)", icon:"ti-droplet", imgUrl:BASE+"Untitled - June 11, 2026 at 12.56.39.png", desc:"One packet required per cleaning cycle." },
+  { name:"5 gallon bucket", pn:null, icon:"ti-bucket", imgUrl:BASE+"5_gallon_pail_blue.jpg", desc:"For mixing and holding sanitizing solution during the cleaning process." },
+  { name:"Spray bottle", pn:null, icon:"ti-spray", imgUrl:BASE+"47319_1000.jpg", desc:"For applying cleaning solution to surfaces and components." },
+  { name:"Microfiber towels", pn:null, icon:"ti-wash", imgUrl:BASE+"300gsm16x16darkblue_261df90f-e732-4743-aa68-ac6df63db09d_1000x (1).webp", desc:null },
+  { name:"Cleaning brush set", pn:null, icon:"ti-brush", imgUrl:BASE+"Pedro_s_6100700_ProBrushKit-1_3888x.webp", desc:"Used to thoroughly clean each flavor connector." },
+  { name:"Glass cleaner", pn:null, icon:"ti-sparkles", imgUrl:BASE+"a257d3a5-17e8-4c89-91d6-558f36973afa_360_store_merchant_15.jpg", desc:"For cleaning the glass touchscreen on the Head Unit of the Bevi machine." },
+  { name:"Cleaning/sanitary gloves", pn:null, icon:"ti-hand-stop", imgUrl:BASE+"S-11433S.webp", desc:"Nitrile or similar disposable gloves required for safe handling of sanitizing chemicals." },
+  { name:"1 liter container", pn:null, icon:"ti-bottle", imgUrl:BASE+"191-tm_thickbox_default.jpg", desc:"Used for priming and collecting remaining water in flavor lines." }
+];
+
+const optional = [
+  { name:"Sanitation kit", pn:"P/N #720-0169", icon:"ti-package", imgUrl:BASE+"Untitled - June 11, 2026 at 12.58.11.png", desc:"One sanitation kit can clean up to 10 Bevi machines. Includes: 1x collapsible bucket, 12x microfiber towels, 1x spray bottle, 10x chlorine-based sanitizer packets, 1x compressed air duster, and 3x cleaning brushes.", warning:"With this kit, you will still need the Octafold Sanitation Tool and glass cleaner separately." }
+];
+
+const list = document.getElementById('checklist');
+
+function imgOrIcon(item) {
+  return item.imgUrl ? `<img src="${item.imgUrl}" alt="${item.name}" />` : `<i class="ti ${item.icon}"></i>`;
+}
+
+function openLB(item) {
+  document.getElementById('lb-img').innerHTML = item.imgUrl ? `<img src="${item.imgUrl}" alt="${item.name}" />` : `<i class="ti ${item.icon}"></i>`;
+  document.getElementById('lb-name').textContent = item.name;
+  const pnEl = document.getElementById('lb-pn');
+  pnEl.textContent = item.pn || '';
+  pnEl.style.display = item.pn ? 'block' : 'none';
+  document.getElementById('lb-tags').innerHTML = item.tag === 'su' ? '<span class="mtag mtag-su">SU 2.0</span>' : item.tag === 'ct' ? '<span class="mtag mtag-ct">CT 1.5</span>' : '';
+  document.getElementById('lb-desc').textContent = item.desc || '';
+  const warnEl = document.getElementById('lb-warning');
+  if (item.warning) { warnEl.innerHTML = '⚠️ ' + item.warning; warnEl.style.display = 'block'; }
+  else { warnEl.style.display = 'none'; }
+  document.getElementById('lb-overlay').classList.add('open');
+}
+
+function closeLB() { document.getElementById('lb-overlay').classList.remove('open'); }
+document.getElementById('lb-overlay').addEventListener('click', function(e) { if (e.target === this) closeLB(); });
+
+function sectionLabel(text) {
+  const d = document.createElement('div');
+  d.className = 'section-label';
+  d.textContent = text;
+  return d;
+}
+
+function makeCheckbox(name) {
+  const cb = document.createElement('input');
+  cb.type = 'checkbox';
+  cb.setAttribute('aria-label', 'Mark ' + name + ' as gathered');
+  return cb;
+}
+
+list.appendChild(sectionLabel('Recommended'));
+const note = document.createElement('p');
+note.className = 'rec-note';
+note.textContent = 'Select the manifold for your machine type:';
+list.appendChild(note);
+
+const pair = document.createElement('div');
+pair.className = 'rec-pair';
+manifolds.forEach(item => {
+  const card = document.createElement('div');
+  card.className = 'rec-card';
+  card.setAttribute('role','button');
+  card.setAttribute('tabindex','0');
+  card.innerHTML = `<div class="rec-thumb">${imgOrIcon(item)}</div><div class="rec-info"><div class="rec-name">${item.name}</div><div class="rec-pn">${item.pn}</div></div><div class="rec-right"><span class="mtag mtag-${item.tag}">${item.machine}</span></div>`;
+  card.querySelector('.rec-right').appendChild(makeCheckbox(item.name));
+  card.addEventListener('click', e => { if (e.target.type !== 'checkbox') openLB(item); });
+  card.addEventListener('keydown', e => { if (e.key === 'Enter') openLB(item); });
+  pair.appendChild(card);
+});
+list.appendChild(pair);
+
+list.appendChild(sectionLabel('Required'));
+required.forEach(item => {
+  const row = document.createElement('div');
+  row.className = 'tool-row';
+  const thumb = document.createElement('div');
+  thumb.className = 'thumb';
+  thumb.setAttribute('role','button');
+  thumb.setAttribute('tabindex','0');
+  thumb.setAttribute('aria-label','View details for ' + item.name);
+  thumb.innerHTML = imgOrIcon(item);
+  thumb.onclick = () => openLB(item);
+  thumb.onkeydown = e => { if (e.key==='Enter'||e.key===' ') openLB(item); };
+  const info = document.createElement('div');
+  info.className = 'tool-info';
+  info.innerHTML = `<div class="tool-name">${item.name}</div>${item.pn?`<div class="tool-pn">${item.pn}</div>`:''}${item.desc?`<div class="tool-desc">${item.desc}</div>`:''}`;
+  const cw = document.createElement('div');
+  cw.style.flexShrink = '0';
+  cw.appendChild(makeCheckbox(item.name));
+  row.appendChild(thumb);
+  row.appendChild(info);
+  row.appendChild(cw);
+  list.appendChild(row);
+});
+
+list.appendChild(sectionLabel('Optional'));
+optional.forEach(item => {
+  const row = document.createElement('div');
+  row.className = 'tool-row';
+  const thumb = document.createElement('div');
+  thumb.className = 'thumb';
+  thumb.setAttribute('role','button');
+  thumb.setAttribute('tabindex','0');
+  thumb.setAttribute('aria-label','View details for ' + item.name);
+  thumb.innerHTML = imgOrIcon(item);
+  thumb.onclick = () => openLB(item);
+  thumb.onkeydown = e => { if (e.key==='Enter'||e.key===' ') openLB(item); };
+  const info = document.createElement('div');
+  info.className = 'tool-info';
+  info.innerHTML = `<div class="tool-name">${item.name}</div>${item.pn?`<div class="tool-pn">${item.pn}</div>`:''}${item.desc?`<div class="tool-desc">${item.desc}</div>`:''}`;
+  const right = document.createElement('div');
+  right.style.cssText = 'display:flex;align-items:center;gap:10px;flex-shrink:0;';
+  const b = document.createElement('span');
+  b.className = 'badge-opt';
+  b.textContent = 'Optional';
+  right.appendChild(b);
+  right.appendChild(makeCheckbox(item.name));
+  row.appendChild(thumb);
+  row.appendChild(info);
+  row.appendChild(right);
+  list.appendChild(row);
+});
+</script>
+</body>
+</html>
