@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bevi PM Tools Checklist</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Open Sans', sans-serif; background: #ffffff; color: #03257E; font-size: 18px; padding: 2rem; width: 100%; }
+    .wrap { background: #ffffff; padding: 0 0 2rem; width: 100%; }
+    .section-label { font-size: 12px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: #246EFF; margin: 1.5rem 0 0.6rem; padding: 0 0 6px; border-bottom: 1px solid #D7E5FF; }
+    .tool-row { display: flex; align-items: center; gap: 14px; padding: 13px 0; border-bottom: 1px solid #D7E5FF; width: 100%; position: relative; }
+    .tool-row:last-child { border-bottom: none; }
+    .thumb { width: 65px; height: 65px; border-radius: 8px; border: 1px solid #D7E5FF; background: #f5f8ff; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #246EFF; transition: border-color 0.15s, background 0.15s; overflow: hidden; position: relative; z-index: 1; }
+    .thumb:hover { border-color: #246EFF; background: #D7E5FF; }
+    .thumb svg.fallback-icon { width: 30px; height: 30px; }
+    .thumb img { width: 100%; height: 100%; object-fit: contain; object-position: center; padding: 4px; }
+    .zoom-badge { position: absolute; bottom: -6px; right: -6px; width: 22px; height: 22px; border-radius: 50%; background: #246EFF; color: #fff; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; z-index: 3; pointer-events: none; box-shadow: 0 1px 4px rgba(3,37,126,0.25); transition: transform 0.15s; }
+    .zoom-badge svg { width: 13px; height: 13px; display: block; }
+    .rec-card:hover .zoom-badge, .tool-row:hover .zoom-badge { transform: scale(1.12); }
+    .tool-info { flex: 1; min-width: 0; }
+    .tool-name { font-size: 18px; font-weight: 600; color: #03257E; }
+    .tool-pn { font-size: 13px; color: #246EFF; margin-top: 3px; font-family: monospace; }
+    .tool-desc { font-size: 16px; color: #5a7ab8; margin-top: 4px; line-height: 1.5; }
+    .mtag { font-size: 13px; font-weight: 600; padding: 4px 12px; border-radius: 99px; white-space: nowrap; }
+    .mtag-su { background: #D7E5FF; color: #03257E; }
+    .mtag-ct { background: #e8f0fe; color: #03257E; }
+    .badge-opt { font-size: 13px; padding: 4px 12px; border-radius: 99px; font-weight: 600; flex-shrink: 0; background: #D7E5FF; color: #03257E; white-space: nowrap; }
+    input[type=checkbox] { width: 22px; height: 22px; cursor: pointer; accent-color: #246EFF; flex-shrink: 0; }
+    .rec-pair { display: flex; gap: 14px; margin-top: 4px; width: 100%; }
+    .rec-card { flex: 1; border: 1px solid #D7E5FF; border-radius: 12px; padding: 16px; background: #f5f8ff; cursor: pointer; display: flex; gap: 14px; align-items: center; transition: border-color 0.15s; min-width: 0; position: relative; }
+    .rec-card:hover { border-color: #246EFF; }
+    .rec-thumb { width: 75px; height: 75px; border-radius: 8px; background: #fff; border: 1px solid #D7E5FF; display: flex; align-items: center; justify-content: center; color: #246EFF; overflow: hidden; position: relative; z-index: 1; }
+    .rec-thumb img { width: 100%; height: 100%; object-fit: contain; object-position: center; padding: 4px; }
+    .rec-thumb svg.fallback-icon { width: 30px; height: 30px; }
+    .rec-info { min-width: 0; flex: 1; }
+    .rec-name { font-size: 15px; font-weight: 600; color: #03257E; line-height: 1.3; }
+    .rec-pn { font-size: 12px; color: #246EFF; font-family: monospace; margin-top: 3px; }
+    .rec-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
+    .rec-note { font-size: 15px; color: #5a7ab8; margin: 0 0 10px; line-height: 1.5; }
+    .popup { display: none; position: absolute; left: 100px; top: 0; z-index: 200; background: #fff; border-radius: 10px; border: 1px solid #D7E5FF; box-shadow: 0 6px 24px rgba(3,37,126,0.13); padding: 12px; width: 240px; max-width: calc(100vw - 24px); max-height: calc(100vh - 16px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .popup.open { display: block; }
+    .popup-img { width: 100%; height: 160px; border-radius: 6px; background: #f5f8ff; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; border: 1px solid #D7E5FF; overflow: hidden; }
+    @supports (aspect-ratio: 4/3) { .popup-img { height: auto; aspect-ratio: 4/3; } }
+    .popup-img svg.fallback-icon { width: 36px; height: 36px; color: #246EFF; }
+    svg.fallback-icon { color: #246EFF; }
+    .popup-img img { width: 100%; height: 100%; object-fit: contain; padding: 10px; }
+    .popup-name { font-size: 13px; font-weight: 600; color: #03257E; margin-bottom: 3px; }
+    .popup-pn { font-size: 11px; color: #246EFF; font-family: monospace; margin-bottom: 6px; }
+    .popup-tags { display: flex; gap: 5px; margin-bottom: 6px; flex-wrap: wrap; }
+    .popup-desc { font-size: 14px; color: #5a7ab8; line-height: 1.55; margin-bottom: 8px; }
+    .popup-warn { font-size: 11px; background: #fff8e1; color: #7a5500; border-radius: 6px; border: 1px solid #ffe082; padding: 5px 8px; margin-bottom: 8px; line-height: 1.5; }
+    .popup-close { font-size: 12px; font-family: 'Open Sans', sans-serif; color: #03257E; background: #D7E5FF; border: none; border-radius: 6px; padding: 5px 10px; cursor: pointer; width: 100%; font-weight: 600; }
+    .popup-close:hover { background: #c0d4ff; }
+
+    /* iOS Safari: taps on non-interactive areas only fire document-level
+       click events if elements are "clickable"; this makes the whole page
+       clickable on touch devices so tap-outside-to-close works on iPhones/iPads */
+    @media (hover: none) { body { cursor: pointer; } }
+
+    /* Tablet (iPad portrait and down) */
+    @media (max-width: 820px) {
+      body { padding: 1.25rem; }
+    }
+
+    /* Phones */
+    @media (max-width: 600px) {
+      body { padding: 1rem; font-size: 16px; }
+      .rec-pair { flex-direction: column; gap: 10px; }
+      .rec-card { padding: 13px; gap: 12px; }
+      .tool-row { gap: 11px; }
+      .tool-name, .rec-name { font-size: 16px; }
+      .tool-desc { font-size: 15px; }
+      .section-label { margin-top: 1.2rem; }
+      .popup { width: 280px; }
+      .popup-name { font-size: 15px; }
+      .popup-pn { font-size: 12.5px; }
+      .popup-desc { font-size: 15px; }
+      .popup-warn { font-size: 12.5px; }
+      .popup-close { font-size: 14px; padding: 8px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="checklist" class="wrap"></div>
+
+<script>
+const BASE = "https://adrianadiaz-del.github.io/PMchecklist/";
+const manifolds = [
+  { machine:"SU 2.0", name:"Octafold 8x Flavor Line Cleaning Manifold", pn:"P/N #720-0133", icon:"ti-tool", tag:"su", imgUrl:BASE+"Untitled - June 11, 2026 at 12.51.08.png", desc:"Allows all 8 flavor lines to be sanitized simultaneously. Note: If not on-hand, the 8 flavor lines can still be sanitized individually, one-at-a-time. However, we strongly recommend using the cleaning manifold to save time and sanitize all 8 lines at once." },
+  { machine:"CT 1.5", name:"4-Flavor Line Cleaning Manifold", pn:"P/N #720-0231", icon:"ti-tool", tag:"ct", imgUrl:BASE+"Untitled - June 11, 2026 at 12.54.57.png", desc:"Allows all 4 flavor lines to be sanitized simultaneously. Note: If not on-hand, the 4 flavor lines can still be sanitized individually, one-at-a-time. However, we strongly recommend using the cleaning manifold to save time and sanitize all 4 lines at once." }
+];
+const required = [
+  { name:"Kay-5 Chlorine-Based Sanitizer (1 packet)", pn:"P/N #720-0144 (5-pack)", icon:"ti-droplet", imgUrl:BASE+"Untitled - June 11, 2026 at 12.56.39.png", desc:"One packet required per cleaning cycle." },
+  { name:"5 gallon bucket", pn:null, icon:"ti-bucket", imgUrl:BASE+"5_gallon_pail_blue.jpg", desc:"For mixing and holding sanitizing solution during the cleaning process." },
+  { name:"Spray bottle", pn:null, icon:"ti-spray", imgUrl:BASE+"47319_1000.jpg", desc:"For applying cleaning solution to surfaces and components." },
+  { name:"Microfiber towels", pn:null, icon:"ti-wash", imgUrl:BASE+"300gsm16x16darkblue_261df90f-e732-4743-aa68-ac6df63db09d_1000x (1).webp", desc:null },
+  { name:"Cleaning brush set", pn:null, icon:"ti-brush", imgUrl:BASE+"Pedro_s_6100700_ProBrushKit-1_3888x.webp", desc:"Used to thoroughly clean each flavor connector." },
+  { name:"Glass cleaner", pn:null, icon:"ti-sparkles", imgUrl:BASE+"a257d3a5-17e8-4c89-91d6-558f36973afa_360_store_merchant_15.jpg", desc:"For cleaning the glass touchscreen on the Head Unit of the Bevi machine." },
+  { name:"Cleaning/sanitary gloves", pn:null, icon:"ti-hand-stop", imgUrl:BASE+"S-11433S.webp", desc:"Nitrile or similar disposable gloves required for safe handling of sanitizing chemicals." },
+  { name:"1 liter container", pn:null, icon:"ti-bottle", imgUrl:BASE+"191-tm_thickbox_default.jpg", desc:"Used for priming and collecting remaining water in flavor lines." }
+];
+const optional = [
+  { name:"Sanitation kit", pn:"P/N #720-0169", icon:"ti-package", imgUrl:BASE+"Untitled - June 11, 2026 at 12.58.11.png", desc:"One sanitation kit can clean up to 10 Bevi machines. Includes: 1x collapsible bucket, 12x microfiber towels, 1x spray bottle, 10x chlorine-based sanitizer packets, 1x compressed air duster, and 3x cleaning brushes.", hidePopupDesc:true, warning:"With this kit, you will still need the Octafold Sanitation Tool and glass cleaner separately." }
+];
+
+// Inline SVGs (no CDN dependency - works even if external fonts/CDNs are blocked)
+const ZOOM_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/><line x1="10" y1="7" x2="10" y2="13"/><line x1="7" y1="10" x2="13" y2="10"/></svg>';
+const TOOL_SVG = '<svg class="fallback-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>';
+
+// If a hosted image fails to load, swap in the generic tool icon instead of a broken image
+function attachImgFallback(container) {
+  const img = container.querySelector('img');
+  if (img) img.addEventListener('error', function() { container.innerHTML = TOOL_SVG; });
+}
+
+let openPopup = null;
+let openThumb = null;
+
+function closeAll() {
+  if (openPopup) { openPopup.classList.remove('open'); openPopup = null; openThumb = null; }
+}
+
+// Keep an open popup correctly placed through rotation / resize
+window.addEventListener('resize', function() {
+  if (openPopup && openThumb) positionPopup(openPopup, openThumb);
+});
+window.addEventListener('orientationchange', function() {
+  setTimeout(function() { if (openPopup && openThumb) positionPopup(openPopup, openThumb); }, 150);
+});
+
+document.addEventListener('click', function(e) {
+  if (openPopup && !openPopup.contains(e.target) && !e.target.closest('.thumb') && !e.target.closest('.rec-thumb')) {
+    closeAll();
+  }
+});
+
+function buildPopup(item) {
+  const p = document.createElement('div');
+  p.className = 'popup';
+  const imgH = item.imgUrl ? `<img src="${item.imgUrl}" alt="${item.name}" />` : TOOL_SVG;
+  const pnH = item.pn ? `<div class="popup-pn">${item.pn}</div>` : '';
+  const tagH = item.tag === 'su' ? '<span class="mtag mtag-su" style="font-size:11px;padding:2px 8px;">SU 2.0</span>'
+             : item.tag === 'ct' ? '<span class="mtag mtag-ct" style="font-size:11px;padding:2px 8px;">CT 1.5</span>' : '';
+  const tagsH = tagH ? `<div class="popup-tags">${tagH}</div>` : '';
+  const descH = (item.desc && !item.hidePopupDesc) ? `<div class="popup-desc">${item.desc}</div>` : '';
+  const warnH = item.warning ? `<div class="popup-warn">⚠️ ${item.warning}</div>` : '';
+  p.innerHTML = `<div class="popup-img">${imgH}</div><div class="popup-name">${item.name}</div>${pnH}${tagsH}${descH}${warnH}<button class="popup-close">Close</button>`;
+  p.querySelector('.popup-close').addEventListener('click', e => { e.stopPropagation(); closeAll(); });
+  attachImgFallback(p.querySelector('.popup-img'));
+  return p;
+}
+
+function positionPopup(popup, thumbEl) {
+  const margin = 8;   // min gap from frame edge
+  const gap = 12;     // gap between thumb and popup
+  const parent = popup.offsetParent || popup.parentElement;
+  const parentRect = parent.getBoundingClientRect();
+  const thumbRect = thumbEl.getBoundingClientRect();
+  const popW = popup.offsetWidth || 240;
+  const popH = popup.offsetHeight;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+
+  // Horizontal: prefer right of thumb, flip to left if no room, then clamp.
+  let desiredLeft;
+  if (vw - thumbRect.right - gap >= popW) {
+    desiredLeft = thumbRect.right + gap;
+  } else {
+    desiredLeft = thumbRect.left - gap - popW;
+  }
+  if (desiredLeft + popW + margin > vw) desiredLeft = vw - margin - popW;
+  if (desiredLeft < margin) desiredLeft = margin;
+  popup.style.left = (desiredLeft - parentRect.left) + 'px';
+
+  // Vertical: align with thumb top, clamp to viewport.
+  let desiredTop = thumbRect.top;
+  if (desiredTop + popH + margin > vh) desiredTop = vh - margin - popH;
+  if (desiredTop < margin) desiredTop = margin;
+  popup.style.top = (desiredTop - parentRect.top) + 'px';
+}
+
+function togglePopup(popup, thumbEl, e) {
+  e.stopPropagation();
+  if (openPopup && openPopup !== popup) closeAll();
+  if (popup.classList.contains('open')) { closeAll(); }
+  else { popup.classList.add('open'); openPopup = popup; openThumb = thumbEl; positionPopup(popup, thumbEl); }
+}
+
+function makeThumb(item, cls, size) {
+  const wrap = document.createElement('div');
+  wrap.style.cssText = `position:relative;flex-shrink:0;width:${size}px;height:${size}px;`;
+  const thumb = document.createElement('div'); thumb.className = cls;
+  thumb.innerHTML = item.imgUrl ? `<img src="${item.imgUrl}" alt="${item.name}" />` : TOOL_SVG;
+  attachImgFallback(thumb);
+  const badge = document.createElement('div'); badge.className = 'zoom-badge';
+  badge.innerHTML = ZOOM_SVG;
+  wrap.appendChild(thumb); wrap.appendChild(badge);
+  return { wrap, thumb };
+}
+
+function sectionLabel(text) { const d=document.createElement('div');d.className='section-label';d.textContent=text;return d; }
+function makeCheckbox(name) { const cb=document.createElement('input');cb.type='checkbox';cb.setAttribute('aria-label','Mark '+name+' as gathered');return cb; }
+
+const list = document.getElementById('checklist');
+
+list.appendChild(sectionLabel('Recommended'));
+const note=document.createElement('p');note.className='rec-note';note.style.cssText='font-size:15px;color:#5a7ab8;margin:0 0 10px;line-height:1.5;';note.textContent='Select the manifold for your machine type:';list.appendChild(note);
+const pair=document.createElement('div');pair.className='rec-pair';
+
+manifolds.forEach(item => {
+  const card=document.createElement('div');card.className='rec-card';card.setAttribute('role','button');card.setAttribute('tabindex','0');
+  const cbWrap=document.createElement('div');cbWrap.style.cssText='display:flex;align-items:center;padding-right:4px;';cbWrap.appendChild(makeCheckbox(item.name));
+  const {wrap, thumb}=makeThumb(item,'rec-thumb',75);
+  const info=document.createElement('div');info.className='rec-info';info.innerHTML=`<div class="rec-name">${item.name}</div><div class="rec-pn">${item.pn}</div>`;
+  const right=document.createElement('div');right.className='rec-right';right.innerHTML=`<span class="mtag mtag-${item.tag}">${item.machine}</span>`;
+  const popup=buildPopup(item);
+  card.appendChild(cbWrap);card.appendChild(wrap);card.appendChild(info);card.appendChild(right);card.appendChild(popup);
+  thumb.addEventListener('click',e=>togglePopup(popup,thumb,e));
+  card.addEventListener('keydown',e=>{if(e.key==='Enter')togglePopup(popup,thumb,e);});
+  pair.appendChild(card);
+});
+list.appendChild(pair);
+
+list.appendChild(sectionLabel('Required'));
+required.forEach(item => {
+  const row=document.createElement('div');row.className='tool-row';
+  const cbWrap=document.createElement('div');cbWrap.style.flexShrink='0';cbWrap.appendChild(makeCheckbox(item.name));
+  const {wrap, thumb}=makeThumb(item,'thumb',65);
+  thumb.setAttribute('role','button');thumb.setAttribute('tabindex','0');thumb.setAttribute('aria-label','View details for '+item.name);
+  const info=document.createElement('div');info.className='tool-info';
+  info.innerHTML=`<div class="tool-name">${item.name}</div>${item.pn?`<div class="tool-pn">${item.pn}</div>`:''}${item.desc?`<div class="tool-desc">${item.desc}</div>`:''}`;
+  const popup=buildPopup(item);
+  row.appendChild(cbWrap);row.appendChild(wrap);row.appendChild(info);row.appendChild(popup);
+  thumb.addEventListener('click',e=>togglePopup(popup,thumb,e));
+  thumb.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')togglePopup(popup,thumb,e);});
+  list.appendChild(row);
+});
+
+list.appendChild(sectionLabel('Optional'));
+optional.forEach(item => {
+  const row=document.createElement('div');row.className='tool-row';
+  const cbWrap=document.createElement('div');cbWrap.style.flexShrink='0';cbWrap.appendChild(makeCheckbox(item.name));
+  const {wrap, thumb}=makeThumb(item,'thumb',65);
+  thumb.setAttribute('role','button');thumb.setAttribute('tabindex','0');thumb.setAttribute('aria-label','View details for '+item.name);
+  const info=document.createElement('div');info.className='tool-info';
+  info.innerHTML=`<div class="tool-name">${item.name}</div>${item.pn?`<div class="tool-pn">${item.pn}</div>`:''}${item.desc?`<div class="tool-desc">${item.desc}</div>`:''}`;
+  const badge=document.createElement('span');badge.className='badge-opt';badge.textContent='Optional';
+  const popup=buildPopup(item);
+  row.appendChild(cbWrap);row.appendChild(wrap);row.appendChild(info);row.appendChild(badge);row.appendChild(popup);
+  thumb.addEventListener('click',e=>togglePopup(popup,thumb,e));
+  thumb.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')togglePopup(popup,thumb,e);});
+  list.appendChild(row);
+});
+</script>
+</body>
+</html>
